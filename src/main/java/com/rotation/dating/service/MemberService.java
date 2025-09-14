@@ -1,8 +1,8 @@
 package com.rotation.dating.service;
 
-import com.rotation.dating.dto.MemberLoginRequest;
-import com.rotation.dating.dto.MemberResponse;
-import com.rotation.dating.dto.MemberSignupRequest;
+import com.rotation.dating.dto.MemberLoginRequestDto;
+import com.rotation.dating.dto.MemberResponseDto;
+import com.rotation.dating.dto.MemberSignupRequestDto;
 import com.rotation.dating.entity.Member;
 import com.rotation.dating.entity.Role;
 import com.rotation.dating.global.error.CustomException;
@@ -27,7 +27,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void signup(MemberSignupRequest request) {
+    public void signup(MemberSignupRequestDto request) {
         if (memberRepository.existsByEmail(request.getEmail())) {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
@@ -42,7 +42,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public String login(MemberLoginRequest request) {
+    public String login(MemberLoginRequestDto request) {
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
@@ -53,18 +53,18 @@ public class MemberService {
         return jwtTokenProvider.createToken(member.getEmail());
     }
 
-    public MemberResponse getMyInfo(String email) {
+    public MemberResponseDto getMyInfo(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
-        return new MemberResponse(member);
+        return new MemberResponseDto(member);
     }
 
-    public MemberResponse getCurrentMember(String email) {
+    public MemberResponseDto getCurrentMember(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
         log.info("Found member: {}", member);
-        return new MemberResponse(member);
+        return new MemberResponseDto(member);
     }
 }

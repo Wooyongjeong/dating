@@ -1,8 +1,8 @@
 package com.rotation.dating.controller;
 
-import com.rotation.dating.dto.MemberLoginRequest;
-import com.rotation.dating.dto.MemberResponse;
-import com.rotation.dating.dto.MemberSignupRequest;
+import com.rotation.dating.dto.MemberLoginRequestDto;
+import com.rotation.dating.dto.MemberResponseDto;
+import com.rotation.dating.dto.MemberSignupRequestDto;
 import com.rotation.dating.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +22,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody MemberSignupRequest request) {
+    public ResponseEntity<Void> signup(@RequestBody MemberSignupRequestDto request) {
         memberService.signup(request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody MemberLoginRequest request) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody MemberLoginRequestDto request) {
         String token = memberService.login(request);
         return ResponseEntity.ok(Map.of("token", token));
     }
@@ -38,7 +38,7 @@ public class MemberController {
         String email = user.getUsername();
         log.info("Current user email from UserDetails: {}", email);
 
-        MemberResponse memberResponse = memberService.getMyInfo(email);
-        return ResponseEntity.ok(memberResponse);
+        MemberResponseDto memberResponseDto = memberService.getMyInfo(email);
+        return ResponseEntity.ok(memberResponseDto);
     }
 }
